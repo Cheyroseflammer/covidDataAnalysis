@@ -1,11 +1,61 @@
---Select *
---From covidDataProject..covidDeaths
---Where continent is not null
---order by 3, 4
+/* 
 
---Select * 
---From covidDataProject..covidVaccinations
---order by 3, 4
+Queries used for Tableau Project
+
+*/
+
+-- Query 1 
+
+Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases) * 100 as death_percentage
+From covidDataProject..covidDeaths
+Where continent is not null 
+Order by 1,2 
+
+-- double check based off data provided
+Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases) * 100 as death_percentage 
+From covidDataProject..covidDeaths
+Where Location = 'World'
+Order By 1,2
+
+
+-- Query 2 
+
+-- EUROPEAN UNION
+Select location, SUM(cast(new_deaths as int)) as total_death_count
+From covidDataProject..covidDeaths
+Where continent is null
+and Location not in ('World','European Union','International')
+Group by Location
+Order by total_death_count desc
+
+-- Query 3
+
+Select Location, Population, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
+From covidDataProject..covidDeaths
+Group by Location, Population
+order by population_case_percentage desc
+
+-- Query 4 
+
+Select Location, Population, date, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
+From covidDataProject..covidDeaths
+Group by Location, Population, date 
+Order by population_case_percentage desc
+
+
+
+
+-- ORIGINAL QUERIES FOR DATA EXPLOREATION
+
+
+Select *
+From covidDataProject..covidDeaths
+Where continent is not null
+order by 3, 4
+
+Select * 
+From covidDataProject..covidVaccinations
+order by 3, 4
 
 
 
