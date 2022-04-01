@@ -37,7 +37,7 @@ ORDER BY highest_case_rate DESC
 
 -- BREAKING DOWN BY CONTINENT
 -- SHOWING COUNTRIES HIGHTEST DEATH COUNT
-SELECT continent, MAX(cast(total_deaths AS int)) AS total_death_count
+SELECT continent, MAX(cast(total_deaths AS 	INT)) AS total_death_count
 FROM covidDataProject..covidDeaths
 WHERE continent IS NOT NULL
 GROUP BY continent
@@ -52,22 +52,20 @@ WHERE continent IS NOT NULL
 --GROUP BY date
 ORDER BY 1,2 
 
-
-
 -- LOOKING AT TOTAL POPULATION VS VACCINATIONS
 -- USE CTE
 
-WITH pop_vs_vac (Continent, location, Date, population, new_vaccinations, rolling_vaccinations)
+WITH pop_vs_vac (Continent, location, date, population, new_vaccinations, rolling_vaccinations)
 AS
 (
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 	--showing convert metod
-	SUM(CONVERT(INT,vac.new_vaccinations)) OVER (Partition BY dea.location ORDER BY dea.location
+	SUM(CONVERT(INT,vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location
 	, 
-	dea.Date) AS rolling_vaccinations
+	dea.date) AS rolling_vaccinations
 	--, (rolling_vaccinations/pop)*100
 FROM covidDataProject..covidDeaths dea
-Join covidDataProject..covidVaccinations vac
+JOIN covidDataProject..covidVaccinations vac
 		ON dea.location = vac.location
 		AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
@@ -77,43 +75,43 @@ FROM pop_vs_vac
 
 -- TEMP TABLE
 -- Drop Table if exists #PercentPopulationVaccinated
-Create Table #PercentagePopulationVaccinated(
+CREATE TABLE #PercentagePopulationVaccinated(
 	Continent NVARCHAR(255),
 	location NVARCHAR(255),
-	Date DATETIME,
+	date DATETIME,
 	population NUMERIC,
 	New_vaccinations NUMERIC,
 	rolling_vaccinations NUMERIC
 )
 
 
-Insert into #PercentagePopulationVaccinated
+INSERT INTO #PercentagePopulationVaccinated
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 	--showing convert metod
 	SUM(CONVERT(INT,vac.new_vaccinations)) OVER (Partition BY dea.location ORDER BY dea.location
 	, 
-	dea.Date) as rolling_vaccinations
+	dea.Date) AS rolling_vaccinations
 	--, (rolling_vaccinations/pop)*100
 FROM covidDataProject..covidDeaths dea
-Join covidDataProject..covidVaccinations vac
-		On dea.location = vac.location
-		and dea.date = vac.date
+JOIN covidDataProject..covidVaccinations vac
+		ON dea.location = vac.location
+		AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
-SELECT *, (rolling_vaccinations/population) * 100 as percentage_rolling
+SELECT *, (rolling_vaccinations/population) * 100 AS percentage_rolling
 FROM #PercentagePopulationVaccinated
 
 
 -- CREATING VIEW 
-Create View PercentagePopulationVaccinated as
+CREATE View PercentagePopulationVaccinated AS
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 	--showing convert metod
-	SUM(CONVERT(INT,vac.new_vaccinations)) OVER (Partition BY dea.location ORDER BY dea.location
+	SUM(CONVERT(INT,vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location
 	, 
-	dea.Date) as rolling_vaccinations
+	dea.Date) AS rolling_vaccinations
 FROM covidDataProject..covidDeaths dea
-Join covidDataProject..covidVaccinations vac
-		On dea.location = vac.location
-		and dea.date = vac.date
+JOIN covidDataProject..covidVaccinations vac
+		ON dea.location = vac.location
+		AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL
 
 

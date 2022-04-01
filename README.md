@@ -1,12 +1,60 @@
-# Covid Data Analyst Project
----
-## Data Analysis and Visualization project using Microsoft SQL tools, SQL, Excel and Tableau
+# Covid Data Analysis
 
-This project is analyzing, cleaning, querying and prepraring data for visualization using Tableau.
+This project is analyzing, cleaning, querying and prepraring Covid-19 data. We first use SQL to analyze the data for ourselves using a multitude of different SQL queries.  Our data is then prepped for visualization in Tableau.
+
+---
+
+## Questions
+
+1.) What percentage of the US population died due to Covid?
+
+Query used to answer this question
+
+````
+SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS death_percentage
+FROM covidDataProject..covidDeaths
+WHERE location LIKE '%states%'
+ORDER BY 1, 2
+````
+
+2.) What is the likelihood (based on population) of contracting Covid in the US?
+
+Query used to answer this question
+
+````
+SELECT continent, date, population, total_cases, (total_cases/population) * 100 AS cases_percenatge
+FROM covidDataProject..covidDeaths
+WHERE continent IS NOT NULL
+ORDER BY 1, 2
+````
+3.) Which continent has the highest case rate?
+
+Query used to answer this question
+
+````
+SELECT continent, population, MAX(total_cases) AS cases_count, MAX((total_cases/population))*100 AS highest_case_rate
+FROM covidDataProject..covidDeaths
+WHERE continent IS NOT NULL
+GROUP BY continent, population
+ORDER BY highest_case_rate DESC
+````
+
+4.) Which continent had the highest death rate?
+
+Query used to answer this question
+
+````
+SELECT continent, MAX(cast(total_deaths AS 	INT)) AS total_death_count
+FROM covidDataProject..covidDeaths
+WHERE continent IS NOT NULL
+GROUP BY continent
+ORDER BY total_death_count DESC 
+````
+
+----
 
 You can find my Tableau workbook for this projects visualization **here**: https://public.tableau.com/app/profile/cheyenne7414/viz/covidDataAnalysis/Dashboard1
 
-----
 
 You can find the data set used **here**: https://ourworldindata.org/covid-deaths
 
@@ -67,50 +115,3 @@ You can find information regarding the data **here**: https://github.com/owid/co
 | Montenegro | 628062     | 6/23/2021 | 100117               | 15.9406237                   |
 | Montenegro | 628062     | 6/22/2021 | 100104               | 15.93855384                  |
 | Montenegro | 628062     | 6/21/2021 | 100092               | 15.9366432                   |
-
-## SQL Queries used for visualization
-
-1.)
-
-```
-Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases) * 100 as death_percentage
-From covidDataProject..covidDeaths
-Where continent is not null 
-Order by 1,2 
-```
-
-2.)
-
-```
-Select location, SUM(cast(new_deaths as int)) as total_death_count
-From covidDataProject..covidDeaths
-Where continent is null
-and Location not in ('World','European Union','International')
-Group by Location
-Order by total_death_count desc
-```
-
-3.)
-```
-Select Location, population, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
-From covidDataProject..covidDeaths
-Group by Location, population
-order by population_case_percentage desc
-```
-
-4.)
-
-```
-Select Location, population, date, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
-From covidDataProject..covidDeaths
-Group by Location, population, date 
-Order by population_case_percentage desc
-```
-
-## Screen Shots
-
-- screen shot of Tableau workbook dashboard 
-
-![tableau-workbook](tableauVisualization.png)
-
-📋 Copy
