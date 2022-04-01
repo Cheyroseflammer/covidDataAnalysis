@@ -14,9 +14,9 @@ You can find information regarding the data **here**: https://github.com/owid/co
 
 ----
 
-### Sample data used for "Percent Population Cases"
+### Sample data used for "Percent population Cases"
 
-| Location   | Population | date      | highest\_case\_count | population\_case\_percentage |
+| Location   | population | date      | highest\_case\_count | population\_case\_percentage |
 | ---------- | ---------- | --------- | -------------------- | ---------------------------- |
 | Andorra    | 77265      | 5/8/2021  | 13406                | 17.35067624                  |
 | Andorra    | 77265      | 5/7/2021  | 13390                | 17.32996829                  |
@@ -68,7 +68,7 @@ You can find information regarding the data **here**: https://github.com/owid/co
 | Montenegro | 628062     | 6/22/2021 | 100104               | 15.93855384                  |
 | Montenegro | 628062     | 6/21/2021 | 100092               | 15.9366432                   |
 
-## SQL Queries used for each table for visualization
+## SQL Queries used for visualization
 
 1.)
 
@@ -92,18 +92,18 @@ Order by total_death_count desc
 
 3.)
 ```
-Select Location, Population, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
+Select Location, population, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
 From covidDataProject..covidDeaths
-Group by Location, Population
+Group by Location, population
 order by population_case_percentage desc
 ```
 
 4.)
 
 ```
-Select Location, Population, date, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
+Select Location, population, date, MAX(total_cases) as highest_case_count, MAX((total_cases/population)) * 100 as population_case_percentage
 From covidDataProject..covidDeaths
-Group by Location, Population, date 
+Group by Location, population, date 
 Order by population_case_percentage desc
 ```
 
